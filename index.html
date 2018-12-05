@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/gun/examples/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+    <script src="bullet.js"></script>
+  </head>
+  <body>
+    <center>
+      <h1>Try it out!</h1>
+
+      <script>
+        var gun = Gun(['http://localhost:8765/gun'])
+        var bullet = new Bullet(gun) // Bullet() || Bullet(gun) || Bullet(['peer])
+
+        // https://github.com/tc39/proposal-top-level-await
+        async function main() {
+
+          //bullet.Mark = { hasKittens: true }
+          bullet.Mark.name = 'Mark Nadal' // Comment this line to see difference.
+
+          //console.log('CTX:', bullet.Mark.name._ctxN )
+          //console.log('CTX:', bullet.Mark._ctxN )
+
+          console.log( await bullet.Mark.value )
+          bullet.Mark.once(data => {
+            console.log(data)
+          })
+
+          // console.log( gun._.graph )
+
+        }
+
+        main()
+      </script>
+
+    </center>
+  </body>
+</html>
