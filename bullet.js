@@ -13,7 +13,7 @@ class Bullet {
 
     this.gun = Gun
     this._ctx = null
-    this._ctxN = ''
+    this._ready = true
 
     this.saveOnChange = (opts && opts.mutate) ? true : false
 
@@ -26,7 +26,10 @@ class Bullet {
         return reject('No gun context')
 
       this._ctx.once(data => {
-        resolve(data)
+        setInterval(() => {
+          if (this._ready)
+            resolve(data)
+        }, 100)
       })
     })
   }
@@ -46,7 +49,7 @@ function bulletProxy(base) {
           return base[prop]
 
         // Method does not exist, is a chainable
-        console.log('Get prop:', prop)
+        //console.log('Get prop:', prop)
         base._ctx = new Proxy(target.get(prop), bulletProxy(base))
         base._ctxN = prop
         return base._ctx
@@ -54,26 +57,12 @@ function bulletProxy(base) {
     },
 
     set (target, prop, receiver) {
-      /*
-      if (base.saveOnChange) {
-        console.log('Putting data')
-        base._ctx.put(receiver)
-      }*/
+      //console.log('Set prop:', prop)
 
-      console.log('Set prop:', prop)
-      /*if (!base._ctx && prop) {
-        console.log('new base')
-        base._ctx = new Proxy(target.get(prop), bulletProxy(base))
-        base._ctxN = prop
-      }*/
+      if (base.saveOnChange)
+        target.get(prop).put(receiver, () => base._ready = true )
 
-      /*base._ctx = new Proxy(target.get(prop), bulletProxy(base))
-      base._ctxN = prop
-
-      return base._ctx.put(receiver)*/
-
-      target.get(prop).put(receiver).once(data => console.log(data))
-      return target
+        return target
     },
   }
 }
