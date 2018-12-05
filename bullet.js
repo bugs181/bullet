@@ -32,7 +32,7 @@ class Bullet {
         }, 100)
       })
     })
-  },
+  }
 
   save() {
 
