@@ -15,7 +15,7 @@ class Bullet {
     this._ctx = null
     this._ctxN = ''
 
-    this.saveOnChange = (opts.mutate) ? true : false
+    this.saveOnChange = (opts && opts.mutate) ? true : false
 
     return new Proxy(this.gun, bulletProxy(this))
   }
@@ -72,7 +72,7 @@ function bulletProxy(base) {
 
       return base._ctx.put(receiver)*/
 
-      target.get(prop).put(receiver)
+      target.get(prop).put(receiver).once(data => console.log(data))
       return target
     },
   }
