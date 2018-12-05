@@ -32,6 +32,10 @@ class Bullet {
         }, 100)
       })
     })
+  },
+
+  save() {
+
   }
 }
 
@@ -58,11 +62,10 @@ function bulletProxy(base) {
 
     set (target, prop, receiver) {
       //console.log('Set prop:', prop)
-
       if (base.saveOnChange)
         target.get(prop).put(receiver, () => base._ready = true )
 
-        return target
+      return target
     },
   }
 }
