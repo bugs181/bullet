@@ -15,7 +15,8 @@ class Bullet {
     this._ctx = null
     this._ready = true
 
-    this.saveOnChange = (opts && opts.mutate) ? true : false
+    // Immutability is an opt-in feature. use: new Bullet(gun, { immutable: true })
+    this.immutable = (opts && opts.immutable) ? true : false
 
     return new Proxy(this.gun, bulletProxy(this))
   }
@@ -62,8 +63,12 @@ function bulletProxy(base) {
 
     set (target, prop, receiver) {
       //console.log('Set prop:', prop)
-      if (base.saveOnChange)
-        target.get(prop).put(receiver, () => base._ready = true )
+      if (!base.immutable)
+        target.get(prop).put(receiver, () => base._ready = true)
+      else {
+        base._immutableResult = receiver
+        base._ready = true
+      }
 
       return target
     },

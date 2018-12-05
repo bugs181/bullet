@@ -10,13 +10,13 @@
 
       <script>
         var gun = Gun(['http://localhost:8765/gun'])
-        var bullet = new Bullet(gun, { mutate: true }) // Bullet() || Bullet(gun) || Bullet(['peer])
+        var bullet = new Bullet(gun) // Bullet() || Bullet(gun) || Bullet(['peer])
 
         // https://github.com/tc39/proposal-top-level-await
         async function main() {
 
           //bullet.Mark = { hasKittens: true }
-          bullet.Mark.name = 'Markus' // Comment this line to see difference.
+          bullet.Mark.name = 'Mark' // Comment this line to see difference.
 
           console.log( await bullet.Mark.value )
           bullet.Mark.once(data => {
