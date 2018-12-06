@@ -10,16 +10,13 @@
       <h1>Try it out!</h1>
 
       <script>
-        var gun = Gun(['http://localhost:8765/gun'])
+        var gun = Gun()
         var bullet = new Bullet(gun) // Bullet() || Bullet(gun) || Bullet(['peer])
 
         // https://github.com/tc39/proposal-top-level-await
         async function main() {
           bullet.Mark.name = 'Mark'
           console.log( await bullet.Mark.value )
-          /*bullet.Mark.once(data => {
-            console.log(data)
-          })*/
         }
 
         main()

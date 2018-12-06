@@ -7,7 +7,7 @@ class Bullet {
     // If we don't pass gun instance, then see if it's available from window or file - use Bullet's args to create a new gun instance.
     const hasGun = (gun && gun.chain) ? true : false
     if (!hasGun) {
-      const gunInstance = (typeof window !== 'undefined') ? window.Gun : require('../gun')
+      const gunInstance = (typeof window !== 'undefined') ? window.Gun : require('gun')
       Gun = gunInstance(...arguments)
     }
 
@@ -47,16 +47,23 @@ class Bullet {
     }
   }
 
-  extends(instance) {
-    if (instance && instance.extends === 'gun')
-      for (const hook of Object.keys(instance)) {
-        if (!this._hooks[hook])
-          this._hooks[hook] = []
+  extend(instances) {
+    if (typeof instances === 'object')
+      if (!Array.isArray(instances))
+        throw new Error('bullet.extends() only supports a single utility or an array of utilities')
+      else
+        instances = [instances]
 
-        this._hooks[hook].push(instance[hook])
-      }
-    else
-      this[instance.name] = instance
+    for (let instance of instances)
+      if (instance && instance.extends === 'gun')
+        for (const hook of Object.keys(instance)) {
+          if (!this._hooks[hook])
+            this._hooks[hook] = []
+
+          this._hooks[hook].push(instance[hook])
+        }
+      else
+        this[instance.name] = instance
   }
 }
 
@@ -89,7 +96,6 @@ function bulletProxy(base) {
       // Method does not exist, is a chainable
       //console.log('Get prop:', prop)
       base._ctx = new Proxy(target.get(prop), bulletProxy(base))
-      base._ctxN = prop
       return base._ctx
     },
 
@@ -114,5 +120,5 @@ function bulletProxy(base) {
 }
 
 // If environment is not browser, export it (for node compatibility)
-//if (typeof window === 'undefined')
-//  module.exports = Bullet
+if (typeof window === 'undefined')
+  module.exports = Bullet

@@ -14,7 +14,8 @@
         var gun = Gun(['http://localhost:8765/gun'])
         var bullet = new Bullet(gun) // Bullet() || Bullet(gun) || Bullet(['peer])
 
-        //bullet.extends(new _Array())
+        //bullet.extend([_Array, _delete])
+        bullet.extend(_Array)
 
         // https://github.com/tc39/proposal-top-level-await
         async function main() {
