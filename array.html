@@ -4,6 +4,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 
     <script src="bullet.js"></script>
+    <script src="utilities/array.js"></script>
   </head>
   <body>
     <center>
@@ -13,9 +14,18 @@
         var gun = Gun(['http://localhost:8765/gun'])
         var bullet = new Bullet(gun) // Bullet() || Bullet(gun) || Bullet(['peer])
 
+        //bullet.extends(new _Array())
+
         // https://github.com/tc39/proposal-top-level-await
         async function main() {
-          bullet.Mark.name = 'Mark'
+
+          //bullet.Mark = { hasKittens: true }
+
+          bullet.Cats.Sparky = { color: 'orange' }
+          bullet.Cats.Howie = { color: 'white' }
+
+          bullet.Mark.cats = [bullet.Cats.Sparky, bullet.Cats.Howie]
+
           console.log( await bullet.Mark.value )
           /*bullet.Mark.once(data => {
             console.log(data)
