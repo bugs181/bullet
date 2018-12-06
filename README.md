@@ -95,10 +95,10 @@ Bullet expects to be a wrapper for other utility functions, offering an easy way
 
 Some utility proposals have already emerged, such as handling arrays in a more suitable fashion.
 
-    bullet.Cats.Sparky = { color: 'orange' }
-    bullet.Cats.Howie = { color: 'white' }
+    bullet.cats.sparky = { color: 'orange' }
+    bullet.cats.howie = { color: 'white' }
 
-    bullet.Mark.cats = [bullet.Cats.Sparky, bullet.Cats.Howie]
+    bullet.mark.cats = [bullet.cats.sparky, bullet.cats.howie]
 
 Another utility proposal was RPC
 
