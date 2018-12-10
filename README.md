@@ -18,8 +18,7 @@ Wrapper around [GunDB](https://github.com/amark/gun) to provide better syntax, p
 
 ## With Bullet: ##
 
-    var gun = Gun()
-    var bullet = new Bullet(gun)
+    var bullet = new Bullet()
 
     bullet.mark = {
       name: "Mark",
@@ -89,6 +88,10 @@ Wrapper around [GunDB](https://github.com/amark/gun) to provide better syntax, p
 
 # How is this possible? #
 It's simple really. Bullet wraps the Gun instance with a Proxy. Each property lookup (using dot notation or bracket) calls a `gun.get()` and returns the Proxy to be used for chaining. Any call to `bullet.value()` will return a promise of `gun.once()`.
+
+# Utilities: #
+- `.value` - Promise getter for `.once()`; `let cats = await bullet.cats.value`
+- `.remove()` - `bullet.cats.remove()`
 
 # More coming soon! #
 Bullet expects to be a wrapper for other utility functions, offering an easy way to extend either bullet or gun via Proxies or directly. This will allow you to create custom bullet methods for wrapping verbose syntaxes.
