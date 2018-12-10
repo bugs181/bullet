@@ -110,3 +110,8 @@ Another utility proposal was RPC
     bullet.rpc.exec('procName', { some: 'data' })
     // or
     bullet.rpc.select('peerName').exec('procName')
+
+<br>
+
+## License: ##
+[MIT](https://github.com/bugs181/bullet/blob/master/LICENSE)
