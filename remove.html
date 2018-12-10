@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/gun/examples/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+
+    <script src="bullet.js"></script>
+    <script src="utilities/remove.js"></script>
+  </head>
+  <body>
+    <center>
+      <h1>Try it out!</h1>
+
+      <script>
+        var bullet = new Bullet()
+
+        bullet.extend(remove) // The important bit
+
+        // https://github.com/tc39/proposal-top-level-await
+        async function main() {
+
+          bullet.cats.sparky = { color: 'orange', name: 'Sparky', type: { genus: 'kitty' } }
+          bullet.cats.howie = { color: 'white', name: 'Howie' }
+
+          //bullet.cats.sparky.unset()
+          bullet.cats.remove()
+
+        }
+
+        main()
+      </script>
+
+    </center>
+  </body>
+</html>

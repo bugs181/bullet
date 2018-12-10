@@ -2,23 +2,28 @@
 
 class Bullet {
   constructor(gun, opts) {
-    let Gun = gun
+    this.gun = gun
+    this.Gun = (typeof window !== 'undefined') ? window.Gun : require('gun/gun')
 
     // If we don't pass gun instance, then see if it's available from window or file - use Bullet's args to create a new gun instance.
     const hasGun = (gun && gun.chain) ? true : false
-    if (!hasGun) {
-      const gunInstance = (typeof window !== 'undefined') ? window.Gun : require('gun')
-      Gun = gunInstance(...arguments)
-    }
+    if (!hasGun)
+      this.gun = this.Gun(...arguments)
 
-    this.gun = Gun
     this._ctx = null
     this._ctxVal = null
     this._ready = true
     this._hooks = {}
+    this._proxyEnable = true
 
     // Immutability is an opt-in feature. use: new Bullet(gun, { immutable: true })
     this.immutable = (opts && opts.immutable) ? true : false
+
+    this.Gun.on('opt', context => {
+      this._registerHooks(context, 'in')
+      this._registerHooks(context, 'out')
+    })
+    this.gun = this.Gun(this.Gun)
 
     return new Proxy(this.gun, bulletProxy(this))
   }
@@ -47,23 +52,46 @@ class Bullet {
     }
   }
 
-  extend(instances) {
-    if (typeof instances === 'object')
-      if (!Array.isArray(instances))
+  extend(clss) {
+    this._proxyEnable = false
+    if (typeof cls === 'object')
+      if (!Array.isArray(clss))
         throw new Error('bullet.extends() only supports a single utility or an array of utilities')
       else
-        instances = [instances]
+        clss = [clss]
+    else
+      clss = [clss]
 
-    for (let instance of instances)
-      if (instance && instance.extends === 'gun')
-        for (const hook of Object.keys(instance)) {
-          if (!this._hooks[hook])
-            this._hooks[hook] = []
-
-          this._hooks[hook].push(instance[hook])
-        }
-      else
+    for (let cls of clss)
+      if (typeof cls === 'function') {
+        const instance = new cls(this)
         this[instance.name] = instance
+        this._registerInstanceHooks(instance)
+      }
+    this._proxyEnable = true
+  }
+
+  _registerHooks(context, event) {
+    let base = this
+    if (!this._hooks[event])
+      this._hooks[event] = []
+
+    context.on(event, function wireOutput(msg) {
+      if (base._hooks[event].length > 0) {
+        for (const hook of base._hooks[event])
+          hook(msg)
+      } else {
+        //console.log('this.to.next:', msg)
+        this.to.next(msg)
+      }
+    })
+  }
+
+  _registerInstanceHooks(instance) {
+    if (typeof instance.out === 'function')
+      this._hooks.out.push(instance.out)
+    if (typeof instance.in === 'function')
+      this._hooks.in.push(instance.in)
   }
 }
 
@@ -71,23 +99,9 @@ class Bullet {
 function bulletProxy(base) {
   return {
     get (target, prop, receiver) {
-      // Run through any hooks first
-      //console.log(prop)
-      let willContinue = true
-      /*if (base._hooks && base._hooks[prop] && Array.isArray(base._hooks[prop]))
-        base._hooks[prop].forEach(hook => {
-          hook(target, prop, receiver, () => willContinue = false)
-        })
-
-      if (!willContinue)
-        return new Proxy(Reflect.get(target, prop, receiver), bulletProxy(base)) // Proxy any nested functions for extends()
-      */
-
       // Return any class methods/props
       if (prop in target || prop === 'inspect' || prop === 'constructor' || typeof prop == 'symbol')
         return Reflect.get(target, prop, receiver)
-        //return new Proxy(Reflect.get(target, prop, receiver), bulletProxy(base)) // Proxy any nested functions for extends()
-        //return new Proxy(target[prop], bulletProxy(base))
 
       // Proxy all other requests as chainables
       if (base[prop]) // Method exists in Bullet
@@ -100,6 +114,9 @@ function bulletProxy(base) {
     },
 
     set (target, prop, receiver) {
+      if (prop in base || !base._proxyEnable)
+        return base[prop] = receiver
+
       //console.log('Set prop:', prop)
       if (!base.immutable) {
         this._ready = false
