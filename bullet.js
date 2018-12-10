@@ -82,7 +82,6 @@ class Bullet {
         for (const hook of base._hooks[event])
           hook(msg)
       } else {
-        //console.log('this.to.next:', msg)
         this.to.next(msg)
       }
     })
@@ -109,7 +108,6 @@ function bulletProxy(base) {
         return base[prop]
 
       // Method does not exist, is a chainable
-      //console.log('Get prop:', prop)
       base._ctx = new Proxy(target.get(prop), bulletProxy(base))
       return base._ctx
     },
@@ -118,12 +116,9 @@ function bulletProxy(base) {
       if (prop in base || !base._proxyEnable)
         return base[prop] = receiver
 
-      //console.log('Set prop:', prop)
       if (!base.immutable) {
         this._ready = false
         target.get(prop).put(receiver, () => base._ready = true)
-        //return new Proxy(target.get(prop), bulletProxy).put(receiver, () => base._ready = true)
-        //return new Proxy(target.get(prop), bulletProxy(base))
       } else {
         console.warn('You have immutable turned on; be sure to .mutate()')
         base._ctxProp = target.get(prop)
@@ -132,7 +127,6 @@ function bulletProxy(base) {
       }
 
       return target
-      //return base._ctx
     },
   }
 }
