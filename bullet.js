@@ -22,6 +22,7 @@ class Bullet {
     this.Gun.on('opt', context => {
       this._registerHooks(context, 'in')
       this._registerHooks(context, 'out')
+      this.to.next(context)
     })
     this.gun = this.Gun(this.Gun)
 
