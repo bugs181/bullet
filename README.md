@@ -87,7 +87,7 @@ Wrapper around [GunDB](https://github.com/amark/gun) to provide better syntax, p
     bullet.list.set({ type: "cucumber", goal: "scare cat" })
 
 # How is this possible? #
-It's simple really. Bullet wraps the Gun instance with a Proxy. Each property lookup (using dot notation or bracket) calls a `gun.get()` and returns the Proxy to be used for chaining. Any call to `bullet.value()` will return a promise of `gun.once()`.
+It's simple really. Bullet wraps the Gun instance with a Proxy. Each property lookup (using dot notation or bracket) calls a `gun.get()` and returns the Proxy to be used for chaining. Any call to `bullet.value` will return a promise getter of `gun.once()`.
 
 # Utilities: #
 - `.value` - Promise getter for `.once()`; `let cats = await bullet.cats.value`
