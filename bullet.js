@@ -19,12 +19,14 @@ class Bullet {
     // Immutability is an opt-in feature. use: new Bullet(gun, { immutable: true })
     this.immutable = (opts && opts.immutable) ? true : false
 
-    this.Gun.on('opt', context => {
-      this._registerHooks(context, 'in')
-      this._registerHooks(context, 'out')
-      //this.to.next(context)
+    const that = this
+    this.Gun.on('opt', function(context) {
+      that._registerHooks(context, 'in')
+      that._registerHooks(context, 'out')
+      this.to.next(context)
     })
     this.gun = this.Gun(this.Gun)
+    this._registerHooks(this.gun, 'in', '_in')
 
     return new Proxy(this.gun, bulletProxy(this))
   }
@@ -72,15 +74,16 @@ class Bullet {
     this._proxyEnable = true
   }
 
-  _registerHooks(context, event) {
+  _registerHooks(context, event, optName) {
     let base = this
-    if (!this._hooks[event])
-      this._hooks[event] = []
+    let eventName = optName || event
+    if (!this._hooks[eventName])
+      this._hooks[eventName] = []
 
     context.on(event, function wireOutput(msg) {
-      if (base._hooks[event].length > 0) {
-        for (const hook of base._hooks[event])
-          hook(msg)
+      if (base._hooks[eventName].length > 0) {
+        for (const hook of base._hooks[eventName])
+          hook.bind(this)(msg)
       } else {
         this.to.next(msg)
       }
