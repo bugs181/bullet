@@ -60,7 +60,7 @@ class Bullet {
     }
   }
 
-  extend(clss) {
+  extend(clss, opts) {
     this._proxyEnable = false
     if (typeof cls === 'object')
       if (!Array.isArray(clss))
@@ -72,7 +72,7 @@ class Bullet {
 
     for (let cls of clss)
       if (typeof cls === 'function') {
-        const instance = new cls(this)
+        const instance = new cls(this, opts)
         this[instance.name] = instance
         this._registerInstanceHooks(instance)
       }
