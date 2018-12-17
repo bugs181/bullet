@@ -6,9 +6,10 @@ class Bullet {
     this.Gun = (typeof window !== 'undefined') ? window.Gun : require('gun/gun')
 
     // If we don't pass gun instance, then see if it's available from window or file - use Bullet's args to create a new gun instance.
-    const hasGun = (gun && gun.chain) ? true : false
+    /*const hasGun = (gun && gun.chain) ? true : false
     if (!hasGun)
       this.gun = this.Gun(...arguments)
+    */
 
     this._ctx = null
     this._ctxVal = null
@@ -25,8 +26,12 @@ class Bullet {
       that._registerHooks(context, 'out')
       this.to.next(context)
     })
-    this.gun = this.Gun(this.Gun)
+    this.gun = this.Gun(...arguments)
     this._registerHooks(this.gun, 'in', '_in')
+    this._registerHooks(this.gun, 'node', '_node')
+
+    this.mutate = this.mutate.bind(this)
+    this.extend = this.extend.bind(this)
 
     return new Proxy(this.gun, bulletProxy(this))
   }
@@ -123,6 +128,7 @@ function bulletProxy(base) {
         this._ready = false
         target.get(prop).put(receiver, () => base._ready = true)
       } else {
+        // eslint-disable-next-line no-console
         console.warn('You have immutable turned on; be sure to .mutate()')
         base._ctxProp = target.get(prop)
         base._ctxVal = receiver
