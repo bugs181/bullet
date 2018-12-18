@@ -14,7 +14,6 @@ class Bullet {
     this._ctx = null
     this._ctxVal = null
     this._ready = true
-    this._hooks = {}
     this._proxyEnable = true
 
     // Immutability is an opt-in feature. use: new Bullet(gun, { immutable: true })
@@ -22,13 +21,10 @@ class Bullet {
 
     const that = this
     this.Gun.on('opt', function(context) {
-      that._registerHooks(context, 'in')
-      that._registerHooks(context, 'out')
+      that._registerContext = context
       this.to.next(context)
     })
     this.gun = this.Gun(...arguments)
-    this._registerHooks(this.gun, 'in', '_in')
-    this._registerHooks(this.gun, 'node', '_node')
 
     this.mutate = this.mutate.bind(this)
     this.extend = this.extend.bind(this)
@@ -51,6 +47,11 @@ class Bullet {
         }, 100)
       })
     })
+  }
+
+  get events() {
+    // Example use: bullet.events.on('get')
+    return this._registerContext
   }
 
   mutate(val) {
@@ -79,27 +80,13 @@ class Bullet {
     this._proxyEnable = true
   }
 
-  _registerHooks(context, event, optName) {
-    let base = this
-    let eventName = optName || event
-    if (!this._hooks[eventName])
-      this._hooks[eventName] = []
-
-    context.on(event, function wireOutput(msg) {
-      if (base._hooks[eventName].length > 0) {
-        for (const hook of base._hooks[eventName])
-          hook.bind(this)(msg)
-      } else {
-        this.to.next(msg)
-      }
-    })
-  }
-
   _registerInstanceHooks(instance) {
-    if (typeof instance.out === 'function')
-      this._hooks.out.push(instance.out)
-    if (typeof instance.in === 'function')
-      this._hooks.in.push(instance.in)
+    // Register Gun.opts.on() events
+    if (typeof instance.events === 'object')
+      for (let event of Object.keys(instance.events)) {
+        if (typeof instance.events[event] === 'function')
+          this._registerContext.on(event, instance.events[event])
+      }
   }
 }
 
