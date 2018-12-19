@@ -111,6 +111,8 @@ Example:
       }
     }
 
+To include your adapter into Bullet, include it in your project file then:<br>
+`bullet.extend(gunAdapter)`
 
 # More coming soon! #
 Bullet expects to be a wrapper for other utility functions, offering an easy way to extend either bullet or gun via Proxies or directly. This will allow you to create custom bullet methods for wrapping verbose syntaxes.
