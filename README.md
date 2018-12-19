@@ -1,5 +1,5 @@
 # bullet
-Wrapper around [GunDB](https://github.com/amark/gun) to provide better syntax, promise support and utility modules.
+Wrapper around [GunDB](https://github.com/amark/gun) to provide alternative syntax, promise support, utility modules, and easy Gun adapter events.
 
 # Rewriting Gun docs: #
 
