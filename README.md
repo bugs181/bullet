@@ -94,9 +94,9 @@ It's simple really. Bullet wraps the Gun instance with a Proxy. Each property lo
 - `.remove()` - `bullet.cats.remove()`
 
 # Writing your own Gun adapter, made easy: #
-One of the best features of Bullet is to write Gun adapters without having to know too much about the Gun constructor, proper placement to initialize your adapter, and bugs caused by not forwarding the events. Bullet takes care of all of this for you! Simply define an `Object` or `Class`, return an object that contains the events you want to hook into, and the rest is up to you.
+One of the best features of Bullet is to write Gun adapters without having to know too much about the Gun constructor, proper placement to initialize your adapter, and bugs caused by not forwarding the events. Bullet takes care of all of this for you! Simply define a `Function` or `Class`, return an object that contains the events you want to hook into, and the rest is up to you.
 
-Example:
+Example class:
 
     class gunAdapter {
       constructor(bullet, opts, context) {
@@ -111,7 +111,18 @@ Example:
       }
     }
 
-To include your adapter into Bullet, include it in your project file then:<br>
+Example function:
+
+    function myAdapter() {
+      console.log('Running myAdapter')
+      return {
+        events: { get: function(msg) {
+          console.log('events.get: ', msg)
+        }}
+      }
+    }
+
+To include your adapter into Bullet, include it in your project then:<br>
 `bullet.extend(gunAdapter)`
 
 # More coming soon! #
