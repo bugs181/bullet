@@ -1,5 +1,5 @@
 # bullet
-Wrapper around [GunDB](https://github.com/amark/gun) to provide better syntax, promise support and utility modules.
+Wrapper around [GunDB](https://github.com/amark/gun) to provide alternative syntax, promise support, utility modules, and easy Gun adapter events.
 
 # Rewriting Gun docs: #
 
@@ -92,6 +92,46 @@ It's simple really. Bullet wraps the Gun instance with a Proxy. Each property lo
 # Utilities: #
 - `.value` - Promise getter for `.once()`; `let cats = await bullet.cats.value`
 - `.remove()` - `bullet.cats.remove()`
+
+# Writing your own Gun adapter, made easy: #
+One of the best features of Bullet is to write Gun adapters without having to know too much about the Gun constructor, proper placement to initialize your adapter, and bugs caused by not forwarding the events. Bullet takes care of all of this for you! Simply define a `Function` or `Class`, return an object that contains the events you want to hook into, and the rest is up to you.
+
+Example class:
+
+    class gunAdapter {
+      constructor(bullet, opts, context) {
+        return {
+          events : {
+            // Storage
+            get: function(...),
+            put: function(...),
+            
+            // Wire
+            in: function(...),
+            out: function(...),
+          }
+        }
+      }
+    }
+
+Example function:
+
+    function gunAdapter() {
+      return {
+        events: { 
+          // Storage
+          get: function(...),
+          put: function(...),
+            
+          // Wire
+          in: function(...),
+          out: function(...),
+        }
+      }
+    }
+
+To use your adapter, include it in your project then:<br>
+`bullet.extend(gunAdapter)`
 
 # More coming soon! #
 Bullet expects to be a wrapper for other utility functions, offering an easy way to extend either bullet or gun via Proxies or directly. This will allow you to create custom bullet methods for wrapping verbose syntaxes.
