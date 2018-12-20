@@ -73,7 +73,7 @@ class Bullet {
 
     for (let cls of clss)
       if (typeof cls === 'function') {
-        const instance = new cls(this, opts)
+        const instance = new cls(this, opts, this._registerContext)
         this[instance.name] = instance
         this._registerInstanceHooks(instance)
       }
