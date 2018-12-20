@@ -130,7 +130,7 @@ Example function:
       }
     }
 
-To include your adapter into Bullet, include it in your project then:<br>
+To use your adapter, include it in your project then:<br>
 `bullet.extend(gunAdapter)`
 
 # More coming soon! #
