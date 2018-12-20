@@ -102,8 +102,11 @@ Example class:
       constructor(bullet, opts, context) {
         return {
           events : {
+            // Storage
             get: function(...),
             put: function(...),
+            
+            // Wire
             in: function(...),
             out: function(...),
           }
@@ -113,12 +116,17 @@ Example class:
 
 Example function:
 
-    function myAdapter() {
-      console.log('Running myAdapter')
+    function gunAdapter() {
       return {
-        events: { get: function(msg) {
-          console.log('events.get: ', msg)
-        }}
+        events: { 
+          // Storage
+          get: function(...),
+          put: function(...),
+            
+          // Wire
+          in: function(...),
+          out: function(...),
+        }
       }
     }
 
