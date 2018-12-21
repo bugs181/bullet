@@ -95,8 +95,12 @@ function bulletProxy(base) {
   return {
     get (target, prop, receiver) {
       // Return any class methods/props
-      if (prop in target || prop === 'inspect' || prop === 'constructor' || typeof prop == 'symbol')
+      if (prop in target || prop === 'inspect' || prop === 'constructor' || typeof prop == 'symbol') {
+        if (typeof target[prop] === 'function')
+          target[prop] = target[prop].bind(target)
+
         return Reflect.get(target, prop, receiver)
+      }
 
       // Proxy all other requests as chainables
       if (base[prop]) // Method exists in Bullet
