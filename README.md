@@ -116,7 +116,7 @@ Example class:
 
 Example function:
 
-    function gunAdapter() {
+    function gunAdapter(bullet, opts, context) {
       return {
         events: { 
           // Storage
